@@ -1,4 +1,4 @@
-package org.manunin.forkjoin.executor;
+package com.manunin.forkjoin.executor;
 
 public interface RepeatableExecutor {
     void run();

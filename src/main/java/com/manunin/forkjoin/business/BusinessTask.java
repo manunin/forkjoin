@@ -1,4 +1,4 @@
-package org.manunin.forkjoin.business;
+package com.manunin.forkjoin.business;
 
 public class BusinessTask implements MaintainedTask {
 

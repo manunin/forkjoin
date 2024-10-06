@@ -1,28 +1,19 @@
-package org.manunin.forkjoin.executor;
+package com.manunin.forkjoin.executor;
 
-import org.manunin.forkjoin.business.MaintainedTask;
+import com.manunin.forkjoin.business.MaintainedTask;
 
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class ForkJoinSchedulerTask extends ForkJoinTask<Void> implements Runnable, RepeatableExecutor {
+public class ForkJoinRepeatableTask extends ForkJoinTask<Void> implements Runnable {
 
     private final MaintainedTask maintained;
     private final long iterations;
-
     private final AtomicLong counter = new AtomicLong(0);
 
-    public ForkJoinSchedulerTask(MaintainedTask task, long iterations) {
+    public ForkJoinRepeatableTask(MaintainedTask task, long iterations) {
         this.maintained = task;
         this.iterations = iterations;
-    }
-
-
-    public Void getRawResult() {
-        return null;
-    }
-
-    protected void setRawResult(Void value) {
     }
 
     @Override
@@ -32,10 +23,13 @@ public class ForkJoinSchedulerTask extends ForkJoinTask<Void> implements Runnabl
     }
 
     @Override
-    public void run() {}
+    public Void getRawResult() {
+        return null;
+    }
 
     @Override
-    public void waitForFinish() {
-        this.join();
-    }
+    protected void setRawResult(Void value) {}
+
+    @Override
+    public void run() {}
 }

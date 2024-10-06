@@ -1,12 +1,20 @@
-package org.manunin;
+package com.manunin;
 
-import org.manunin.forkjoin.business.BusinessTask;
-import org.manunin.forkjoin.business.MaintainedTask;
-import org.manunin.forkjoin.executor.BlockingQueueRepeatableExecutor;
-import org.manunin.forkjoin.executor.ForkJoinRepeatableExecutor;
-import org.manunin.forkjoin.executor.RepeatableExecutor;
-import org.manunin.forkjoin.executor.SemaphoreRepeatableExecutor;
-import org.openjdk.jmh.annotations.*;
+import com.manunin.forkjoin.executor.BlockingQueueRepeatableExecutor;
+import com.manunin.forkjoin.business.BusinessTask;
+import com.manunin.forkjoin.business.MaintainedTask;
+import com.manunin.forkjoin.executor.ForkJoinRepeatableExecutor;
+import com.manunin.forkjoin.executor.RepeatableExecutor;
+import com.manunin.forkjoin.executor.SemaphoreRepeatableExecutor;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Warmup;
 
 import java.io.IOException;
 import java.util.stream.IntStream;
@@ -38,13 +46,13 @@ public class App {
     @State(Scope.Benchmark)
     public static class BenchmarkExecutionPlan {
         @Param({"1", "10", "100", "1000"})
-        int iterations;
+        int p2_iterations;
 
         @Param({"FORK_JOIN", "BLOCKING_QUEUE", "SEMAPHORE"})
-        String executor;
+        String p3_executor;
 
         @Param({"1", "10"})
-        int businessTaskDurationInMillis;
+        int p1_businessTaskDurationInMillis;
     }
 
     public static void main( String[] args ) throws IOException {
@@ -57,9 +65,9 @@ public class App {
     @Measurement(iterations = 5, time = 5)
     @BenchmarkMode(Mode.AverageTime)
     public static void runApp(BenchmarkExecutionPlan plan) {
-        MaintainedTask businessTask = new BusinessTask(plan.businessTaskDurationInMillis);
-        RepeatableExecutor executor = RepeatableExecutors.valueOf(plan.executor).getExecutor(plan.iterations, businessTask);
-        IntStream.range(0, plan.iterations).forEach(i -> executor.run());
+        MaintainedTask businessTask = new BusinessTask(plan.p1_businessTaskDurationInMillis);
+        RepeatableExecutor executor = RepeatableExecutors.valueOf(plan.p3_executor).getExecutor(plan.p2_iterations, businessTask);
+        IntStream.range(0, plan.p2_iterations).forEach(i -> executor.run());
         executor.waitForFinish();
     }
 }
